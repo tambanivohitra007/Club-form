@@ -2,6 +2,7 @@
 /**
  * Step-Specific Test Runner
  * Tests specific requirements for each step of the Club Registration Form
+ * UPDATED STEPS
  */
 
 class StepTestRunner {
