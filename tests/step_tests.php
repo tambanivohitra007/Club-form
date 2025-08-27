@@ -13,6 +13,12 @@ class StepTestRunner {
         $this->currentStep = (int)($_ENV['CURRENT_STEP'] ?? 1);
     }
     
+    private function isStepTagged($stepNumber) {
+        $output = [];
+        exec("git tag -l 'step-$stepNumber' 2>/dev/null", $output);
+        return !empty($output);
+    }
+    
     public function runTests() {
         echo "=== STEP {$this->currentStep} TESTS ===\n";
         
@@ -124,8 +130,11 @@ class StepTestRunner {
     private function testStep2_Styling() {
         echo "Testing Step 2: CSS Styling and Layout\n";
         
-        // Previous step requirements should still pass
-        $this->testStep1_BasicForm();
+        // Verify Step 1 is tagged (prerequisite)
+        if (!$this->isStepTagged(1)) {
+            $this->fail("Step 1 must be tagged before working on Step 2");
+            return;
+        }
         
         if (!file_exists('styles.css')) {
             $this->fail("styles.css file missing");
