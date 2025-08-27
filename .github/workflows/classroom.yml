@@ -1,8 +1,9 @@
-name: GitHub Classroom Workflow
+name: Club Registration Form Autograding
 
 on: 
   push:
     branches: [ main, master ]
+    tags: [ 'step-*' ]
   pull_request:
     branches: [ main, master ]
 
@@ -13,44 +14,36 @@ permissions:
 
 jobs:
   build:
-    name: Autograding
+    name: Autograding Club Registration Form
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Need full history for tag checking
     
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
-        extensions: mbstring, xml, ctype, json, tokenizer
-        coverage: xdebug
+        extensions: mbstring, xml, ctype, json, tokenizer, dom
+        coverage: none
     
-    - name: Install Composer dependencies
-      run: |
-        if [ -f composer.json ]; then
-          composer install --prefer-dist --no-progress --no-suggest
-        fi
+    - name: Check Project Structure
+      run: php tests/structure_test.php
     
     - name: Run PHP Syntax Check
-      run: find . -name "*.php" -exec php -l {} \;
-    
-    - name: Run PHPUnit Tests
       run: |
-        if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
-          ./vendor/bin/phpunit --coverage-text --colors=never
-        elif [ -d tests ]; then
-          ./vendor/bin/phpunit tests/ --coverage-text --colors=never
-        fi
+        echo "Checking PHP syntax..."
+        find . -name "*.php" -not -path "./tests/*" -exec php -l {} \; || exit 1
     
-    - name: Run Custom Test Script
-      run: |
-        if [ -f test_runner.php ]; then
-          php test_runner.php
-        fi
+    - name: Determine Current Step
+      id: step_check
+      run: php tests/step_detector.php
     
-    - name: Autograding Reporter
-      uses: classroom-resources/autograding-grading-reporter@v1
+    - name: Run Step-Specific Tests
+      run: php tests/step_tests.php
       env:
-        POINTS: '100'
-      with:
-        runners: phpunit
+        CURRENT_STEP: ${{ steps.step_check.outputs.step }}
+    
+    - name: Check Git Tags for Step Completion
+      run: php tests/tag_validator.php
