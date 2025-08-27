@@ -1,0 +1,34 @@
+{
+  "tests": [
+    {
+      "name": "PHP Syntax Check",
+      "setup": "",
+      "run": "find . -name \"*.php\" -exec php -l {} \\;",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 10
+    },
+    {
+      "name": "PHPUnit Tests",
+      "setup": "composer install",
+      "run": "./vendor/bin/phpunit --testdox",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 30,
+      "points": 70
+    },
+    {
+      "name": "Custom Tests",
+      "setup": "",
+      "run": "php test_runner.php",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 20,
+      "points": 20
+    }
+  ]
+}
