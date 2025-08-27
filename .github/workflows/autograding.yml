@@ -1,0 +1,25 @@
+name: Autograding
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  autograding:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install PHPUnit
+        run: composer global require phpunit/phpunit --with-all-dependencies
+
+      - name: Run PHPUnit
+        run: |
+          ~/.composer/vendor/bin/phpunit --testdox
