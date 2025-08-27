@@ -1,34 +1,54 @@
 {
   "tests": [
     {
+      "name": "Project Structure",
+      "setup": "",
+      "run": "php tests/structure_test.php",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 15
+    },
+    {
       "name": "PHP Syntax Check",
       "setup": "",
-      "run": "find . -name \"*.php\" -exec php -l {} \\;",
+      "run": "find . -name \"*.php\" -not -path \"./tests/*\" -exec php -l {} \\;",
+      "input": "",
+      "output": "",
+      "comparison": "included", 
+      "timeout": 10,
+      "points": 10
+    },
+    {
+      "name": "Step Detection",
+      "setup": "",
+      "run": "php tests/step_detector.php",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 5
+    },
+    {
+      "name": "Step-Specific Tests",
+      "setup": "php tests/step_detector.php > /dev/null && export CURRENT_STEP=$(cat /tmp/current_step.txt)",
+      "run": "php tests/step_tests.php",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 20,
+      "points": 60
+    },
+    {
+      "name": "Tag Validation",
+      "setup": "",
+      "run": "php tests/tag_validator.php",
       "input": "",
       "output": "",
       "comparison": "included",
       "timeout": 10,
       "points": 10
-    },
-    {
-      "name": "PHPUnit Tests",
-      "setup": "composer install",
-      "run": "./vendor/bin/phpunit --testdox",
-      "input": "",
-      "output": "",
-      "comparison": "included",
-      "timeout": 30,
-      "points": 70
-    },
-    {
-      "name": "Custom Tests",
-      "setup": "",
-      "run": "php test_runner.php",
-      "input": "",
-      "output": "",
-      "comparison": "included",
-      "timeout": 20,
-      "points": 20
     }
   ]
 }
