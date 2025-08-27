@@ -1,6 +1,21 @@
-
 {
-  "require-dev": {
-    "phpunit/phpunit": "^10"
-  }
+    "name": "classroom/php-assignment",
+    "description": "PHP Assignment for GitHub Classroom",
+    "type": "project",
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Assignment\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
 }
