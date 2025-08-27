@@ -1,0 +1,56 @@
+name: GitHub Classroom Workflow
+
+on: 
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, xml, ctype, json, tokenizer
+        coverage: xdebug
+    
+    - name: Install Composer dependencies
+      run: |
+        if [ -f composer.json ]; then
+          composer install --prefer-dist --no-progress --no-suggest
+        fi
+    
+    - name: Run PHP Syntax Check
+      run: find . -name "*.php" -exec php -l {} \;
+    
+    - name: Run PHPUnit Tests
+      run: |
+        if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
+          ./vendor/bin/phpunit --coverage-text --colors=never
+        elif [ -d tests ]; then
+          ./vendor/bin/phpunit tests/ --coverage-text --colors=never
+        fi
+    
+    - name: Run Custom Test Script
+      run: |
+        if [ -f test_runner.php ]; then
+          php test_runner.php
+        fi
+    
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        POINTS: '100'
+      with:
+        runners: phpunit
